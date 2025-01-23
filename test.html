@@ -1,52 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Target WebAR</title>
-  <!-- Include mind-ar.js -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-three.prod.js"></script>
-  <!-- Include Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-</head>
-<body style="margin: 0; overflow: hidden;">
-  <div id="ar-container"></div>
-  <script>
-    // Initialize mind-ar.js
-    const mindAR = new window.MINDAR.IMAGE.MindARThree({
-      container: document.querySelector("#ar-container"),
-      imageTargetSrc: "./targets.mind", // Path to your .mind file
-    });
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;">
+      <a-assets>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+      </a-assets>
 
-    const { renderer, scene, camera } = mindAR;
-
-    // Create a 3D object
-    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const box = new THREE.Mesh(geometry, material);
-    box.visible = false;
-    scene.add(box);
-
-    mindAR.onTargetFound = () => {
-      console.log("Target found!");
-      box.visible = true;
-    };
-
-    mindAR.onTargetLost = () => {
-      console.log("Target lost!");
-      box.visible = false;
-    };
-
-    // Start AR session
-    mindAR.start().catch((error) => {
-      console.error("Failed to start AR session:", error);
-    });
-
-    // Render the scene
-    renderer.setAnimationLoop(() => {
-      box.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    });
-  </script>
-</body>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane src="#card" position="0 0 0" height="0.552" width="1"></a-plane>
+      </a-entity>
+    </a-scene>
+  </body>
 </html>
+
