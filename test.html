@@ -10,41 +10,42 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <!-- AR Container -->
   <div id="ar-container"></div>
-
   <script>
     // Initialize mind-ar.js
     const mindAR = new window.MINDAR.IMAGE.MindARThree({
-      container: document.querySelector("#ar-container"), // AR container
+      container: document.querySelector("#ar-container"),
       imageTargetSrc: "./targets.mind", // Path to your .mind file
     });
 
-    // Get renderer, scene, and camera from mind-ar.js
     const { renderer, scene, camera } = mindAR;
 
-    // Create a 3D object (a green spinning box)
-    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5); // Box dimensions
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+    // Create a 3D object
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const box = new THREE.Mesh(geometry, material);
-    box.visible = false; // Start as invisible
+    box.visible = false;
     scene.add(box);
 
-    // Show the box when the image target is detected
     mindAR.onTargetFound = () => {
+      console.log("Target found!");
       box.visible = true;
     };
 
-    // Hide the box when the image target is lost
     mindAR.onTargetLost = () => {
+      console.log("Target lost!");
       box.visible = false;
     };
 
-    // Start the AR session and render the scene
-    mindAR.start(); // Start mind-ar.js
+    // Start AR session
+    mindAR.start().catch((error) => {
+      console.error("Failed to start AR session:", error);
+    });
+
+    // Render the scene
     renderer.setAnimationLoop(() => {
-      box.rotation.y += 0.01; // Rotate the box for effect
-      renderer.render(scene, camera); // Render the scene and camera
+      box.rotation.y += 0.01;
+      renderer.render(scene, camera);
     });
   </script>
 </body>
